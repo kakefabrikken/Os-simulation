@@ -1,4 +1,4 @@
-package opsys.oving3.code;
+//package opsys.oving3.code;
 
 public class CPU implements Constants {
 	
@@ -28,12 +28,13 @@ public class CPU implements Constants {
 	public void setCurrentProcess(Process p) {
 		this.currentProcess = p;
 	}
+	
 	public Process getCurrentProcess() {
 		return this.currentProcess;
 	}
 	
 	
-	/*public int run(){ //returnere en int som simulation kan bruke til å lage en event kanskje
+	/*public int run(){ //returnere en int som simulation kan bruke til ï¿½ lage en event kanskje
 		
 		if (!cpuQueue.isEmpty()) { 
 			Process current = (Process)cpuQueue.removeNext(); 
@@ -46,7 +47,7 @@ public class CPU implements Constants {
 				// adjust process cpu time requirement and append the process to the cpu queue
 				current.updateCpuTimeNeeded(timeSlice);
 				cpuQueue.insert(current);
-				// kanskje en idé å håndtere muligheten for tom cpu-kø (og dermed fortsette å putre på denne prosessen) her
+				// kanskje en idï¿½ ï¿½ hï¿½ndtere muligheten for tom cpu-kï¿½ (og dermed fortsette ï¿½ putre pï¿½ denne prosessen) her
 				
 				return SWITCH_PROCESS;
 			}
@@ -63,7 +64,7 @@ public class CPU implements Constants {
 		*/
     }
 
-	public Process getNextProcess(long clock) {
+	public Process getNextProcess() {
 		if (!cpuQueue.isEmpty()) {
 			Process current = (Process) cpuQueue.removeNext();
 			return current;

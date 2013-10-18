@@ -1,4 +1,4 @@
-package opsys.oving3.code;
+//package opsys.oving3.code;
 
 public class IO implements Constants {
 
@@ -20,14 +20,17 @@ public class IO implements Constants {
 		ioQueue.insert(p);
 	}
 	
-	public void setCurrentProcess(Process p) {
+	public Event setCurrentProcess(Process p, long clock) {
 		this.currentProcess = p;
+		Event e = new Event(END_IO, clock + p.getIoTimeNeeded());
+		return e;
+		
 	}
 	public Process getCurrentProcess() {
 		return this.currentProcess;
 	}
 	
-	public Process getNextProcess(long clock) {
+	public Process getNextProcess() {
 		if (!ioQueue.isEmpty()) {
 			Process current = (Process) ioQueue.removeNext();
 			return current;
@@ -40,10 +43,16 @@ public class IO implements Constants {
 	}
 
 
-	public Process endIoOperation() {
-		Process current = getCurrentProcess();
-		setCurrentProcess(null);
+	public Process endIoOperation(long clock, EventQueue eq) {
+		//Process current = getCurrentProcess();
+		Process current = currentProcess;
+		Process next = getNextProcess();
+		currentProcess = next;
+		if (next != null) {
+			Event newEvent = setCurrentProcess(next, clock);
+			eq.insertEvent(newEvent);
+		}
 		current.setNextIoActivity();
-		return null;
+		return current;
 	}
 }

@@ -1,4 +1,4 @@
-package opsys.oving3.code;
+//package opsys.oving3.code;
 import java.awt.*;
 import java.util.*;
 
@@ -151,6 +151,7 @@ public class Process implements Constants
 	public void setNextIoActivity() {
 		ioTimeNeeded = (int)(Math.random() * 0.5 * cpuTimeNeeded);
 		timeToNextIoOperation = (int)(Math.random() * avgIoInterval + avgIoInterval/2);
+		//System.out.println("I/O time needed: " + ioTimeNeeded + ", and time to next I/O: " + timeToNextIoOperation);
 		//do wonderful shit with Math.random()
 	}
 	

@@ -1,4 +1,4 @@
-package opsys.oving3.code;
+//package opsys.oving3.code;
 import java.util.*;
 
 /**
@@ -11,7 +11,7 @@ import java.util.*;
 public class EventQueue
 {
 	/** The list of events */
-	private ArrayList events;
+	private static ArrayList events;
 
 	/**
 	 * Creates a new Event Queue.
@@ -40,6 +40,15 @@ public class EventQueue
 	 */
     public Event getNextEvent() {
 		  return (Event)events.remove(0);
+    }
+    
+    public static void printEvents() {
+    	System.out.print("[");
+    	for (int i = 0; i < events.size(); i++) {
+			Event e = (Event)events.get(i);
+			System.out.printf("Type: %d, Time: %d;  ", e.getType(), e.getTime());
+		}
+    	System.out.println("]");
     }
 
     /**

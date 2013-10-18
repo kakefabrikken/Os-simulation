@@ -1,4 +1,4 @@
-package opsys.oving3.code;
+//package opsys.oving3.code;
 import java.io.*;
 
 /**
@@ -80,9 +80,10 @@ public class Simulator implements Constants
 			// Let the memory unit and the GUI know that time has passed
 			memory.timePassed(timeDifference);
 			gui.timePassed(timeDifference);
-			//cpu.timePassed(timeDifference); må kanskje ha noe slikt
+			//cpu.timePassed(timeDifference); mÃ¥ kanskje ha noe slikt
 			// Deal with the event
 			if (clock < simulationLength) {
+				EventQueue.printEvents();
 				processEvent(event);
 			}
 		}
@@ -171,7 +172,10 @@ public class Simulator implements Constants
 	}
 	
 	public void makeEvent(Process current) {
-		if (current == null) { return; }
+		if (current == null) { 
+			System.out.println("Current process in makeEvent is null");
+			return;
+		}
 		if (current.getCpuTimeNeeded() > maxCpuTime) {
 			current.updateCpuTimeNeeded(maxCpuTime);
 			current.updateTimeToNextIo(maxCpuTime);
@@ -181,13 +185,11 @@ public class Simulator implements Constants
 			else{
 				eventQueue.insertEvent(new Event(SWITCH_PROCESS, clock + maxCpuTime));
 			}
-		}
-		
-		else {
+		} else {
+			//TODO check if more I/O needed
 			current.updateCpuTimeNeeded(current.getCpuTimeNeeded());
 			eventQueue.insertEvent(new Event(END_PROCESS, clock + current.getCpuTimeNeeded()));
 		}
-		//TODO add I/O stuff
 	}
 	
 
@@ -219,7 +221,9 @@ public class Simulator implements Constants
 			}
 			else {
 				cpu.setIdle();
-				
+				gui.setCpuActive(null);
+				flushMemoryQueue();
+				System.out.println("CPU should not idle any more");
 			}
 		}
 	}
@@ -232,11 +236,21 @@ public class Simulator implements Constants
 		//clock += current.getCpuTimeNeeded();
 		current.leftCpuQueue(clock);
 		memory.processCompleted(current);
-		cpu.setCurrentProcess(null);
+		cpu.setIdle();
+		gui.setCpuActive(null);
 		statistics.nofCompletedProcesses++;
-		// Incomplete
+		
+		forceCPUNotIdle();
 	}
 
+	private void forceCPUNotIdle() {
+		if ( !cpuQueue.isEmpty() ) {
+			Process newProc = (Process)cpuQueue.removeNext();
+			cpu.setCurrentProcess(newProc); // pop process from queue to be run
+			gui.setCpuActive(newProc);
+			makeEvent(newProc);
+		}
+	}
 	/**
 	 * Processes an event signifying that the active process needs to
 	 * perform an I/O operation.
@@ -244,25 +258,28 @@ public class Simulator implements Constants
 	private void processIoRequest() {
 		Process current = cpu.getCurrentProcess();
 		//current.updateCpuTimeNeeded(current.getTimeToNextIoOperation());
-		cpu.setCurrentProcess(null); // since we pop the process from the cpu
+		cpu.setIdle(); // since we pop the process from the cpu
 		gui.setCpuActive(null);
 		putProcessInIo(current);
-		// Incomplete
+		
+		forceCPUNotIdle();
 	}
 
 	private void putProcessInIo(Process current) {
 		if (io.isIdle()) {
 			if (ioQueue.isEmpty()) {
 				// there is nothing in IO
-				io.setCurrentProcess(current);
+				Event newEvent = io.setCurrentProcess(current, clock);
+				eventQueue.insertEvent(newEvent);
 				gui.setIoActive(current);
-				makeEvent(current);
+				//makeEvent(current);
 			}
-			else { 
+			else {
 				Process newProc = (Process)ioQueue.removeNext();
-				io.setCurrentProcess(newProc);
+				Event newEvent = io.setCurrentProcess(newProc, clock);
+				eventQueue.insertEvent(newEvent);
 				gui.setIoActive(newProc);
-				makeEvent(newProc);
+				//makeEvent(newProc);
 				ioQueue.insert(current);
 			}
 		}
@@ -276,10 +293,9 @@ public class Simulator implements Constants
 	 * is done with its I/O operation.
 	 */
 	private void endIoOperation() {
-		Process current = io.endIoOperation();
-		gui.setIoActive(null);
+		Process current = io.endIoOperation(clock, eventQueue);
+		gui.setIoActive( io.getCurrentProcess() );
 		putProcessInCpu(current);
-		//IO end event
 		//current.leftIoQueue(clock);
 	}
 
