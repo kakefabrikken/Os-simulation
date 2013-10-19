@@ -1,5 +1,3 @@
-package opsys.oving3.code;
-
 public class CPU implements Constants {
 	
 	public static final int NO_PROCESS_IN_QUEUE = -1;

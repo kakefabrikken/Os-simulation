@@ -1,4 +1,3 @@
-package opsys.oving3.code;
 import java.io.*;
 
 /**
@@ -21,10 +20,8 @@ public class Simulator implements Constants
         /** The average length between process arrivals */
         private long avgArrivalInterval;
         // Add member variables as needed
-        private Queue cpuQueue;
-        
+        private Queue cpuQueue;        
         private CPU cpu;
-        
         private IO io;
         private Queue ioQueue;
         private long maxCpuTime;
@@ -168,7 +165,8 @@ public class Simulator implements Constants
                         // Try to use the freed memory:
                         flushMemoryQueue();
                         // Update statistics
-                        p.updateStatistics(statistics);
+                        // WTF, no! Stupid code!
+                        //p.updateStatistics(statistics);
 
                         // Check for more free memory
                         p = memory.checkMemory(clock);
@@ -183,7 +181,7 @@ public class Simulator implements Constants
                 if (current.getCpuTimeNeeded() > maxCpuTime) {
                         current.updateCpuTimeNeeded(maxCpuTime);
                         current.updateTimeToNextIo(maxCpuTime);
-			statistics.cpuTimeSpentProc += maxCpuTime;
+                        statistics.cpuTimeSpentProc += maxCpuTime;
                         if (current.getTimeToNextIoOperation() <= 0){
                                 eventQueue.insertEvent(new Event(IO_REQUEST, clock + maxCpuTime));
                         }
@@ -191,10 +189,13 @@ public class Simulator implements Constants
                                 eventQueue.insertEvent(new Event(SWITCH_PROCESS, clock + maxCpuTime));
                         }
                 } else {
-                        //TODO check if more I/O needed
-                        current.updateCpuTimeNeeded(current.getCpuTimeNeeded());
+                	if (current.getTimeToNextIoOperation() < current.getCpuTimeNeeded()){
+                        eventQueue.insertEvent(new Event(IO_REQUEST, clock + current.getTimeToNextIoOperation()));
+                	} else {
+                		current.updateCpuTimeNeeded(current.getCpuTimeNeeded());
                         eventQueue.insertEvent(new Event(END_PROCESS, clock + current.getCpuTimeNeeded()));
-			statistics.cpuTimeSpentProc += current.getCpuTimeNeeded();
+                        statistics.cpuTimeSpentProc += current.getCpuTimeNeeded();
+                	}
                 }
         }
         
@@ -203,7 +204,6 @@ public class Simulator implements Constants
          * Simulates a process switch.
          */
         private void switchProcess() {
-                //System.out.println("\nIt's 'switch process' time");
                 Process curr = cpu.getCurrentProcess();
                 if (curr != null) { // cpu is busy
                         curr.updateCpuTimeNeeded(maxCpuTime);
@@ -215,7 +215,6 @@ public class Simulator implements Constants
                         newProc.leftCpuQueue(clock);
                         gui.setCpuActive(newProc);
                         makeEvent(newProc);
-                        // Incomplete
                         statistics.CPUswitches++;
                 }
                 else { // we are currently idle. Time to fix that
@@ -245,6 +244,7 @@ public class Simulator implements Constants
                 memory.processCompleted(current);
                 cpu.setIdle();
                 gui.setCpuActive(null);
+                current.updateAllStatistics(statistics, clock);
                 statistics.nofCompletedProcesses++;
                 
                 forceCPUNotIdle();
@@ -282,7 +282,6 @@ public class Simulator implements Constants
                                 current.leftIoQueue(clock);
                                 eventQueue.insertEvent(newEvent);
                                 gui.setIoActive(current);
-                                //makeEvent(current);
                         }
                         else {
                                 Process newProc = (Process)ioQueue.removeNext();
@@ -290,7 +289,6 @@ public class Simulator implements Constants
                                 newProc.leftIoQueue(clock);
                                 eventQueue.insertEvent(newEvent);
                                 gui.setIoActive(newProc);
-                                //makeEvent(newProc);
                                 ioQueue.insert(current);
                         }
                 }
@@ -312,7 +310,6 @@ public class Simulator implements Constants
                 gui.setIoActive( nextInIo );
                 putProcessInCpu(current);
 		statistics.nofIoOPerations++;
-		//current.leftIoQueue(clock);
 	}
 
         /**

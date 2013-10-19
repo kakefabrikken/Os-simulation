@@ -1,4 +1,3 @@
-package opsys.oving3.code;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;

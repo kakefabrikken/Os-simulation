@@ -1,4 +1,3 @@
-package opsys.oving3.code;
 import java.awt.*;
 import java.util.*;
 
@@ -44,6 +43,7 @@ public class Process implements Constants
         private long nofTimesInIoQueue = 0;
         /** The global time of the last event involving this process */
         private long timeOfLastEvent;
+        private long clockAtCreation;
 
         /**
          * Creates a new process with given parameters. Other parameters are randomly
@@ -58,11 +58,10 @@ public class Process implements Constants
                 cpuTimeNeeded = 100 + (long)(Math.random()*9900);
                 // Average interval between I/O requests varies from 1% to 25% of CPU time needed
                 avgIoInterval = (1 + (long)(Math.random()*25))*cpuTimeNeeded/100;
-		//if(Math.random() > 0.5) {
-			setNextIoActivity();
-		//}
+                setNextIoActivity();
                 // The first and latest event involving this process is its creation
                 timeOfLastEvent = creationTime;
+                clockAtCreation = creationTime;
                 // Assign a process ID
                 processId = nextProcessId++;
                 // Assign a pseudo-random color used by the GUI
@@ -101,12 +100,16 @@ public class Process implements Constants
         }
     
         public void leftCpuQueue(long clock) {
-            timeSpentInCpu += clock - timeOfLastEvent;
+            timeSpentWaitingForCpu += clock - timeOfLastEvent;
+            if ( clock - timeOfLastEvent > 0 )
+            	nofTimesInCpuQueue++;
             timeOfLastEvent = clock;
         }
         
         public void leftIoQueue(long clock) {
-        	timeSpentInIo += clock - timeOfLastEvent;
+        	timeSpentWaitingForIo += clock - timeOfLastEvent;
+            if ( clock - timeOfLastEvent > 0 )
+            	nofTimesInIoQueue++;
         	timeOfLastEvent = clock;
         }
         
@@ -118,6 +121,17 @@ public class Process implements Constants
         public void leftIo(long clock) {
         	timeSpentInIo += clock - timeOfLastEvent;
         	timeOfLastEvent = clock;
+        }
+        
+        public void updateAllStatistics(Statistics stats, long currentClock) {
+        	stats.totalTimeSpentInCpu += timeSpentInCpu;
+        	stats.totalTimeSpentInIo += timeSpentInIo;
+        	stats.totalTimeSpentWaitingForCpu += timeSpentWaitingForCpu;
+        	stats.totalTimeSpentWaitingForIo += timeSpentWaitingForIo;
+        	stats.totalTimeSpentWaitingForMemory += timeSpentWaitingForMemory;
+        	stats.totalNumberOfTimesInCpuQueue += nofTimesInCpuQueue;
+        	stats.totalNumberOfTimesInIoQueue += nofTimesInIoQueue;
+        	stats.totalLivedTime += currentClock - clockAtCreation;
         }
         
         public long getMemoryNeeded() {
@@ -139,10 +153,6 @@ public class Process implements Constants
          * leaves the system.
      * @param statistics        The Statistics object to be updated.
      */
-        public void updateStatistics(Statistics statistics) {
-                statistics.totalTimeSpentWaitingForMemory += timeSpentWaitingForMemory;
-                statistics.nofCompletedProcesses++;
-        }
 
         public long getIoTimeNeeded() {
                 return ioTimeNeeded;
