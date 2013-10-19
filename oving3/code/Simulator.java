@@ -181,6 +181,7 @@ public class Simulator implements Constants
 		if (current.getCpuTimeNeeded() > maxCpuTime) {
 			current.updateCpuTimeNeeded(maxCpuTime);
 			current.updateTimeToNextIo(maxCpuTime);
+			statistics.cpuTimeSpentProc += maxCpuTime;
 			if (current.getTimeToNextIoOperation() <= 0){
 				eventQueue.insertEvent(new Event(IO_REQUEST, clock + maxCpuTime));
 			}
@@ -191,6 +192,7 @@ public class Simulator implements Constants
 			//TODO check if more I/O needed
 			current.updateCpuTimeNeeded(current.getCpuTimeNeeded());
 			eventQueue.insertEvent(new Event(END_PROCESS, clock + current.getCpuTimeNeeded()));
+			statistics.cpuTimeSpentProc += current.getCpuTimeNeeded();
 		}
 	}
 	
