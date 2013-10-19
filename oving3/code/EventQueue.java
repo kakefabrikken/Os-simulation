@@ -10,59 +10,52 @@ import java.util.*;
  */
 public class EventQueue
 {
-	/** The list of events */
-	private static ArrayList events;
+        /** The list of events */
+        private static ArrayList events;
 
-	/**
-	 * Creates a new Event Queue.
-	 */
-	public EventQueue() {
-		events = new ArrayList();
-	}
+        /**
+         * Creates a new Event Queue.
+         */
+        public EventQueue() {
+                events = new ArrayList();
+        }
 
-	/**
-	 * Inserts an event in the queue.
-	 * The event is added to the event list, which
-	 * is then resorted.
-	 * @param event	The event to be inserted.
-	 */
+        /**
+         * Inserts an event in the queue.
+         * The event is added to the event list, which
+         * is then resorted.
+         * @param event        The event to be inserted.
+         */
     public void insertEvent(Event event) {
-		if(event != null) {
-			events.add(event);
-			Collections.sort(events);
-		}
+                if(event != null) {
+                        events.add(event);
+                        Collections.sort(events);
+                }
     }
 
-	/**
-	 * Removes and returns the earliest event (the event
-	 * with the lowest time value) from the queue.
-	 * @return	The event with the lowest time value in the queue.
-	 */
+        /**
+         * Removes and returns the earliest event (the event
+         * with the lowest time value) from the queue.
+         * @return        The event with the lowest time value in the queue.
+         */
     public Event getNextEvent() {
-		  return (Event)events.remove(0);
+                  return (Event)events.remove(0);
     }
     
     public static void printEvents() {
-    	System.out.print("[");
-    	for (int i = 0; i < events.size(); i++) {
-			Event e = (Event)events.get(i);
-			System.out.printf("Type: %d, Time: %d;  ", e.getType(), e.getTime());
-		}
-    	System.out.println("]");
+            System.out.print("[");
+            for (int i = 0; i < events.size(); i++) {
+                        Event e = (Event)events.get(i);
+                        System.out.printf("Type: %d, Time: %d;  ", e.getType(), e.getTime());
+                }
+            System.out.println("]");
     }
 
     /**
      * Checks whether or not the event queue is empty.
-     * @return	Whether or not the event queue is empty.
+     * @return        Whether or not the event queue is empty.
      */
     public boolean isEmpty() {
-		return events.size() == 0;
-	}
+                return events.size() == 0;
+        }
 }
-
-
-
-
-
-
-

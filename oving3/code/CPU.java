@@ -33,29 +33,6 @@ public class CPU implements Constants {
 		return this.currentProcess;
 	}
 	
-	
-	/*public int run(){ //returnere en int som simulation kan bruke til � lage en event kanskje
-		
-		if (!cpuQueue.isEmpty()) { 
-			Process current = (Process)cpuQueue.removeNext(); 
-			if (current.getCpuTimeNeeded() <= timeSlice) { // we can finish in one go
-				statistics.nofCompletedProcesses++;
-				// end process time kanskje?
-				return END_PROCESS;
-			}
-			else {
-				// adjust process cpu time requirement and append the process to the cpu queue
-				current.updateCpuTimeNeeded(timeSlice);
-				cpuQueue.insert(current);
-				// kanskje en id� � h�ndtere muligheten for tom cpu-k� (og dermed fortsette � putre p� denne prosessen) her
-				
-				return SWITCH_PROCESS;
-			}
-		}
-		return NO_PROCESS_IN_QUEUE;	
-	}
-	*/
-	
 	public void timePassed(long timePassed) {
 		/*statistics.memoryQueueLengthTime += memoryQueue.getQueueLength()*timePassed;
 		if (memoryQueue.getQueueLength() > statistics.memoryQueueLargestLength) {
