@@ -1,4 +1,4 @@
-//package opsys.oving3.code;
+package opsys.oving3.code;
 /**
  * This class contains information about an event. The different
  * types of events are described in the Constants interface.

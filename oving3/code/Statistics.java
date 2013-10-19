@@ -1,3 +1,4 @@
+package opsys.oving3.code;
 /**
  * This class contains a lot of public variables that can be updated
  * by other classes during a simulation, to collect information about
@@ -32,6 +33,8 @@ public class Statistics
         public long nofProcsPutInIo = 0;
         public double fuckyouoving = 0; //average time in system per process
         
+    public long cpuQueueLargestLength = 0;
+    
         /**
          * Prints out a report summarizing all collected data about the simulation.
          * @param simulationLength        The number of milliseconds that the simulation covered.
@@ -44,17 +47,17 @@ public class Statistics
                 System.out.println("Number of created processes:                                  "+nofCreatedProcesses);
                 System.out.println("Number of (forced) process switches:                          "+CPUswitches);
                 System.out.println("Number of processed I/O operations:                           "+nofIoOPerations);
-                System.out.println("Average throughput ( finished processes per second):          "+procPerSec);
+		System.out.println("Average throughput ( finished processes per second):          "+(float)nofCompletedProcesses/simulationLength/1000);
                 System.out.println();
                 System.out.println("Total CPU time spent processing:                              "+cpuTimeSpentProc + " ms");
-                System.out.println("Fraction of CPU time spent processing:                        "+cpuTimeSpentProcFrac + "%");
-                System.out.println("Total CPU time spent waiting:                                 "+cpuWaitingTime + " ms");
-                System.out.println("Fraction of CPU time spent waiting:                           "+cpuTimeSpentWaitingFrac + "%");
+		System.out.println("Fraction of CPU time spent processing:                        "+ (float)cpuTimeSpentProc/simulationLength);
+		System.out.println("Total CPU time spent waiting:                                 "+ (simulationLength - cpuTimeSpentProc) + " ms");
+		System.out.println("Fraction of CPU time spent waiting:                           "+(float)(simulationLength - cpuTimeSpentProc)/simulationLength);
                 System.out.println();
                 System.out.println("Largest occuring memory queue length:                         "+memoryQueueLargestLength);
                 System.out.println("Average memory queue length:                                  "+(float)memoryQueueLengthTime/simulationLength);
-                System.out.println("Largest occurring cpu queue length:                           "+largestCpuQueueSize);
-                System.out.println("Average memory queue length:                                  "+(float)cpuQueueLengthTime/simulationLength);
+		System.out.println("Largest occurring cpu queue length:                           "+cpuQueueLargestLength);
+		System.out.println("Average cpu queue length:                                     "+(float)cpuQueueLengthTime/simulationLength);
                 System.out.println("Largest occuring I/O queue length:                            "+ioQueueLargestLength);
                 System.out.println("Average I/O queue length:                                     "+(float)ioQueueLengthTime/simulationLength);
                 if(nofCompletedProcesses > 0) {
@@ -64,7 +67,7 @@ public class Statistics
                         System.out.println("Average # of times a process has been placed in cpu queue: "+nofProcsPutInCpu);
                         System.out.println("Average # of times a process has been placed in I/O queue: "+nofProcsPutInIo);
                         System.out.println();
-                        System.out.println("Average time spent in system per process:             "+fuckyouoving); // somthing something dark side
+			System.out.println("Average time spent in system per process:                     "+fuckyouoving); // somthing something dark side
                         System.out.println("Average time spent waiting for memory per process:            "+
                                 totalTimeSpentWaitingForMemory/nofCompletedProcesses+" ms");
                         System.out.println("Average time spent waiting for cpu per process                ");

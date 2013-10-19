@@ -1,28 +1,29 @@
+package opsys.oving3.code;
  /**
  * This class implements functionality associated with
  * the memory device of the simulated system.
  */
 public class Memory {
-        /** The queue of processes waiting for free memory */
-        private Queue memoryQueue;
-        /** A reference to the statistics collector */
-        private Statistics statistics;
-        /** The amount of memory in the memory device */
-        private long memorySize;
-        /** The amount of free memory in the memory device */
-        private long freeMemory;
+	/** The queue of processes waiting for free memory */
+	private Queue memoryQueue;
+	/** A reference to the statistics collector */
+	private Statistics statistics;
+	/** The amount of memory in the memory device */
+	private long memorySize;
+	/** The amount of free memory in the memory device */
+	private long freeMemory;
 
-        /**
-         * Creates a new memory device with the given parameters.
-         * @param memoryQueue        The memory queue to be used.
-         * @param memorySize        The amount of memory in the memory device.
-         * @param statistics        A reference to the statistics collector.
-         */
+	/**
+	 * Creates a new memory device with the given parameters.
+	 * @param memoryQueue	The memory queue to be used.
+	 * @param memorySize	The amount of memory in the memory device.
+	 * @param statistics	A reference to the statistics collector.
+	 */
     public Memory(Queue memoryQueue, long memorySize, Statistics statistics) {
-                this.memoryQueue = memoryQueue;
-                this.memorySize = memorySize;
-                this.statistics = statistics;
-                freeMemory = memorySize;
+		this.memoryQueue = memoryQueue;
+		this.memorySize = memorySize;
+		this.statistics = statistics;
+		freeMemory = memorySize;
     }
 
         /**

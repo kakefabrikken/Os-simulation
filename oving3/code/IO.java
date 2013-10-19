@@ -1,3 +1,5 @@
+package opsys.oving3.code;
+
 public class IO implements Constants {
 
         private Process currentProcess;
@@ -28,7 +30,10 @@ public class IO implements Constants {
                 return this.currentProcess;
         }
         
-        public Process getNextProcess() {
+        public Process getNcurrent;
+        }
+	
+	public void tiextProcess() {
                 if (!ioQueue.isEmpty()) {
                         Process current = (Process) ioQueue.removeNext();
                         return current;
@@ -52,4 +57,11 @@ public class IO implements Constants {
                 current.setNextIoActivity();
                 return current;
         }
+	
+	public void timePassed(long timePassed) {
+		statistics.ioQueueLengthTime += ioQueue.getQueueLength()*timePassed;
+		if (ioQueue.getQueueLength() > statistics.ioQueueLargestLength) {
+			statistics.ioQueueLargestLength = ioQueue.getQueueLength(); 
+		}	
+    }
 }

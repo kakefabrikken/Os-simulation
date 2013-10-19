@@ -1,3 +1,5 @@
+package opsys.oving3.code;
+
 public interface Constants 
 {
 	/** Event type describing the arrival of a new process */

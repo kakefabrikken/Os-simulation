@@ -1,3 +1,4 @@
+package opsys.oving3.code;
 import java.io.*;
 
 /**
@@ -79,9 +80,12 @@ public class Simulator implements Constants
                         // Let the memory unit and the GUI know that time has passed
                         memory.timePassed(timeDifference);
                         gui.timePassed(timeDifference);
-                        // Deal with the event
-                        if (clock < simulationLength) {
-                                EventQueue.printEvents();
+			cpu.timePassed(timeDifference);
+			io.timePassed(timeDifference);
+			//cpu.timePassed(timeDifference); må kanskje ha noe slikt
+			// Deal with the event
+			if (clock < simulationLength) {
+				//EventQueue.printEvents();
                                 processEvent(event);
                         }
                 }
@@ -179,6 +183,7 @@ public class Simulator implements Constants
                 if (current.getCpuTimeNeeded() > maxCpuTime) {
                         current.updateCpuTimeNeeded(maxCpuTime);
                         current.updateTimeToNextIo(maxCpuTime);
+			statistics.cpuTimeSpentProc += maxCpuTime;
                         if (current.getTimeToNextIoOperation() <= 0){
                                 eventQueue.insertEvent(new Event(IO_REQUEST, clock + maxCpuTime));
                         }
@@ -189,6 +194,7 @@ public class Simulator implements Constants
                         //TODO check if more I/O needed
                         current.updateCpuTimeNeeded(current.getCpuTimeNeeded());
                         eventQueue.insertEvent(new Event(END_PROCESS, clock + current.getCpuTimeNeeded()));
+			statistics.cpuTimeSpentProc += current.getCpuTimeNeeded();
                 }
         }
         
@@ -305,7 +311,9 @@ public class Simulator implements Constants
                 	nextInIo.leftIoQueue(clock);
                 gui.setIoActive( nextInIo );
                 putProcessInCpu(current);
-        }
+		statistics.nofIoOPerations++;
+		//current.leftIoQueue(clock);
+	}
 
         /**
          * Reads a number from the an input reader.
