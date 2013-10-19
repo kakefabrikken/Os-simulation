@@ -1,4 +1,4 @@
-//package opsys.oving3.code;
+package opsys.oving3.code;
 import java.io.*;
 
 /**
@@ -80,10 +80,12 @@ public class Simulator implements Constants
 			// Let the memory unit and the GUI know that time has passed
 			memory.timePassed(timeDifference);
 			gui.timePassed(timeDifference);
+			cpu.timePassed(timeDifference);
+			io.timePassed(timeDifference);
 			//cpu.timePassed(timeDifference); må kanskje ha noe slikt
 			// Deal with the event
 			if (clock < simulationLength) {
-				EventQueue.printEvents();
+				//EventQueue.printEvents();
 				processEvent(event);
 			}
 		}
@@ -296,6 +298,7 @@ public class Simulator implements Constants
 		Process current = io.endIoOperation(clock, eventQueue);
 		gui.setIoActive( io.getCurrentProcess() );
 		putProcessInCpu(current);
+		statistics.nofIoOPerations++;
 		//current.leftIoQueue(clock);
 	}
 

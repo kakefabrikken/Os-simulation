@@ -1,4 +1,4 @@
-//package opsys.oving3.code;
+package opsys.oving3.code;
 
 public interface Constants 
 {

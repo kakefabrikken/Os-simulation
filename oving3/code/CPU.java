@@ -1,4 +1,4 @@
-//package opsys.oving3.code;
+package opsys.oving3.code;
 
 public class CPU implements Constants {
 	
@@ -57,11 +57,10 @@ public class CPU implements Constants {
 	*/
 	
 	public void timePassed(long timePassed) {
-		/*statistics.memoryQueueLengthTime += memoryQueue.getQueueLength()*timePassed;
-		if (memoryQueue.getQueueLength() > statistics.memoryQueueLargestLength) {
-			statistics.memoryQueueLargestLength = memoryQueue.getQueueLength(); 
-		}
-		*/
+		statistics.cpuQueueLengthTime += cpuQueue.getQueueLength()*timePassed;
+		if (cpuQueue.getQueueLength() > statistics.cpuQueueLargestLength) {
+			statistics.cpuQueueLargestLength = cpuQueue.getQueueLength(); 
+		}	
     }
 
 	public Process getNextProcess() {
